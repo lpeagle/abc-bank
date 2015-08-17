@@ -11,7 +11,7 @@ public class BankTest {
     public void customerSummary() {
         Bank bank = new Bank();
         Customer john = new Customer("John");
-        john.openAccount(new Account(Account.CHECKING));
+        john.openAccount(new Account(AccountType.CHECKING));
         bank.addCustomer(john);
 
         assertEquals("Customer Summary\n - John (1 account)", bank.customerSummary());
@@ -20,35 +20,35 @@ public class BankTest {
     @Test
     public void checkingAccount() {
         Bank bank = new Bank();
-        Account checkingAccount = new Account(Account.CHECKING);
+        Account checkingAccount = new Account(AccountType.CHECKING);
         Customer bill = new Customer("Bill").openAccount(checkingAccount);
         bank.addCustomer(bill);
 
         checkingAccount.deposit(100.0);
 
-        assertEquals(0.1, bank.totalInterestPaid(), DOUBLE_DELTA);
+        assertEquals(0.1/365.0, bank.totalInterestPaid(), DOUBLE_DELTA);
     }
 
     @Test
     public void savings_account() {
         Bank bank = new Bank();
-        Account checkingAccount = new Account(Account.SAVINGS);
+        Account checkingAccount = new Account(AccountType.SAVINGS);
         bank.addCustomer(new Customer("Bill").openAccount(checkingAccount));
 
         checkingAccount.deposit(1500.0);
 
-        assertEquals(2.0, bank.totalInterestPaid(), DOUBLE_DELTA);
+        assertEquals(2.0/365.0, bank.totalInterestPaid(), DOUBLE_DELTA);
     }
 
     @Test
     public void maxi_savings_account() {
         Bank bank = new Bank();
-        Account checkingAccount = new Account(Account.MAXI_SAVINGS);
-        bank.addCustomer(new Customer("Bill").openAccount(checkingAccount));
+        Account maxiAccount = new Account(AccountType.MAXI_SAVINGS);
+        bank.addCustomer(new Customer("Bill").openAccount(maxiAccount));
 
-        checkingAccount.deposit(3000.0);
+        maxiAccount.deposit(3000.0);
 
-        assertEquals(170.0, bank.totalInterestPaid(), DOUBLE_DELTA);
+        assertEquals(0.05*3000.0/365.0, bank.totalInterestPaid(), DOUBLE_DELTA);
     }
 
 }

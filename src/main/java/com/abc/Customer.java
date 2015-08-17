@@ -5,6 +5,8 @@ import java.util.List;
 
 import static java.lang.Math.abs;
 
+import java.time.LocalDate;
+
 public class Customer {
     private String name;
     private List<Account> accounts;
@@ -27,10 +29,10 @@ public class Customer {
         return accounts.size();
     }
 
-    public double totalInterestEarned() {
+    public double totalInterestEarned(LocalDate date) {
         double total = 0;
         for (Account a : accounts)
-            total += a.interestEarned();
+            total += a.interestEarned(date);
         return total;
     }
 
@@ -50,23 +52,19 @@ public class Customer {
         String s = "";
 
        //Translate to pretty account type
-        switch(a.getAccountType()){
-            case Account.CHECKING:
+        if(a.getAccountType()==AccountType.CHECKING){
                 s += "Checking Account\n";
-                break;
-            case Account.SAVINGS:
+        }else if(a.getAccountType()== AccountType.SAVINGS){
                 s += "Savings Account\n";
-                break;
-            case Account.MAXI_SAVINGS:
+        }else if(a.getAccountType()== AccountType.MAXI_SAVINGS){
                 s += "Maxi Savings Account\n";
-                break;
         }
 
         //Now total up all the transactions
         double total = 0.0;
-        for (Transaction t : a.transactions) {
-            s += "  " + (t.amount < 0 ? "withdrawal" : "deposit") + " " + toDollars(t.amount) + "\n";
-            total += t.amount;
+        for (Transaction t : a.getTransactions()) {
+            s += "  " + (t.getAmount() < 0 ? "withdrawal" : "deposit") + " " + toDollars(t.getAmount()) + "\n";
+            total += t.getAmount();
         }
         s += "Total " + toDollars(total);
         return s;
@@ -75,4 +73,10 @@ public class Customer {
     private String toDollars(double d){
         return String.format("$%,.2f", abs(d));
     }
+
+	public List<Account> getAccounts() {
+		return accounts;
+	}
+    
+        
 }
